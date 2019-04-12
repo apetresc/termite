@@ -1014,6 +1014,9 @@ gboolean key_press_cb(VteTerminal *vte, GdkEventKey *event, keybind_info *info) 
             case GDK_KEY_l:
                 vte_terminal_reset(vte, TRUE, TRUE);
                 return TRUE;
+            case GDK_KEY_ISO_Left_Tab:
+                vte_terminal_feed_child(info->vte, "\033[27;6;9~", -1);
+                return TRUE;
             default:
                 if (modify_key_feed(event, info, modify_table))
                     return TRUE;
@@ -1025,7 +1028,7 @@ gboolean key_press_cb(VteTerminal *vte, GdkEventKey *event, keybind_info *info) 
     } else if (modifiers == GDK_CONTROL_MASK) {
         switch (gdk_keyval_to_lower(event->keyval)) {
             case GDK_KEY_Tab:
-                overlay_show(&info->panel, overlay_mode::completion, vte);
+                vte_terminal_feed_child(info->vte, "\033[27;5;9~", -1);
                 return TRUE;
             case GDK_KEY_plus:
                 increase_font_scale(vte);
